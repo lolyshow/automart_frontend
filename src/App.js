@@ -1,12 +1,13 @@
 import React from 'react';
+import CreateCar from './pages/CreateCar';
+import Home from './pages/Home';
+import ManageCars from './pages/ManageCars';
 function App() {
   return (
-    <div className="container">
-      <div className = "card">
-        <div className = "card-body">
-          <button className = "btn btn-primary"> hire me</button>
-        </div>
-      </div>
+    <div className="">
+      <Home/>
+      <CreateCar/>
+      <ManageCars/>
     </div>
   );
 }
