@@ -4,7 +4,7 @@ import CreateCar from './pages/CreateCar';
 import Home from './pages/Home';
 import ManageCars from './pages/ManageCars';
 import {BrowserRouter as Router,Route, Routes} from "react-router-dom";
-import { createBrowserHistory } from "history";
+import  "./styles/styles.css";
 function App() {
   return (
     

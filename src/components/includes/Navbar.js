@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from 'react-router-dom'
 function Navbar(){
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-dark">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
@@ -14,7 +14,7 @@ function Navbar(){
                 <Link className="nav-link active" to="/">View Cars</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/createCar">Create Car</Link>
+                <Link className="nav-link active" to="/createCar">Create Car</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/manageCars">Manage Car</Link>
