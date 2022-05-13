@@ -8,21 +8,25 @@ function ManageCars(){
     }, [])
     const [processing, setProcessing] = useState(false)
     const [userData, setUserData] = useState(null)
-    const onClickDelete= async(e)=>{
-        e.preventDefault()
-        console.log("delete")
+    const onClickDelete= async(id)=>{
+        
 
             try {
                 setProcessing(true);
-                let path = "api/app/delete";
-                await Helper.Request(path,"get")
+                let path = "api/app/deleteCar";
+                let payload = {
+                    id
+                }
+                await Helper.Request(path,"post",payload,"application/json")
                 .then((result) =>{ 
                   let { message, error, response } = result;
                   setProcessing(false);
-                  
                   if (!error) {
-                    console.log("loaded");
-                    setProcessing(false);
+                      console.log(response);
+                      if(response.status === 200){
+                        setProcessing(false);
+                        return getCars()
+                      }
                     
                   } else {
                     setProcessing(false);
@@ -37,9 +41,7 @@ function ManageCars(){
     }
 
     const getCars= async()=>{
-        console.log("insideTrysdd,,,hfjhjgddjhgfhjgfjhgfhgkfhgfk,,,,,,,,,,,,,,,,,,,,")
         try {
-            console.log("inside Try")
             setProcessing(true);
             let path = "api/app/getAllCars";
             await Helper.Request(path,"get")
@@ -49,7 +51,6 @@ function ManageCars(){
               
               if (!error) {
                 setProcessing(false);
-                // console.log("loaded",response);
                 if(response?.status == 200){
                     
                     setUserData(response)
@@ -67,26 +68,25 @@ function ManageCars(){
         }
     }
 
-    const onclickImage = () =>{
-        console.log("clickedMe")
+    const onclickImage = (url) =>{
+        console.log("clickedMe",url)
     }
 
     const tableContent=()=>{
         let {data,others} = userData;
-        console.log("gjhghfjhfhgfjjhgjgh",userData)
         return(
             <tbody>
                 {data &&
                 
-                (data.map((data, index)=>{
-                    return(<tr key = {index}>
-                    <th scope="row">{index+1}</th>
-                    <td onClick={()=>onclickImage()}><img  src = {others.imagePath+data.image} height={30} width={30}/></td>
-                    <td>{data.name}</td>
-                    <td>{data.description}</td>
-                    
-                    <td> <a href = "" onClick = {onClickDelete} class = "text-danger"><i class="bi bi-trash"></i></a></td>
-                </tr>)}))
+                    (data.map((data, index)=>{
+                        return(<tr key = {index}>
+                        <th scope="row">{index+1}</th>
+                        <td onClick={()=>onclickImage(others.imagePath+data.image)}><img  src = {others.imagePath+data.image} height={30} width={30}/></td>
+                        <td>{data.name}</td>
+                        <td>{data.description}</td>
+                        
+                        <td> <a onClick = {()=>onClickDelete(data._id)} class = "text-danger"><i class="bi bi-trash"></i></a></td>
+                    </tr>)}))
                 }
             </tbody>
         )
@@ -110,10 +110,8 @@ function ManageCars(){
                         </tr>
                     </thead>
                     
-
-                    {tableContent()}
+                    {userData && tableContent()}
                         
-                    
                     </table>
                 </div>
             </div>

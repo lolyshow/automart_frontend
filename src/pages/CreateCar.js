@@ -2,18 +2,23 @@ import React,{useState} from "react";
 import ButtonComponent from "../components/ButtonComponent";
 import FileUploadComponent from "../components/FileUploadComponent";
 import InputComponent from "../components/InputComponent";
+import LoadingSpinner from "../components/LoadingSpinner";
 import Helper from "../helpers/Helper";
 
-
 function CreateCar(){
+
+    
+
     const [carName, setCarName] = useState("")
     const [description, setDescription] = useState("")
     const [year, setYear] = useState("")
     const [image, setImage] = useState(null)
     const [amount, setAmount] = useState("")
     const [processing, setProcessing] = useState(false)
+    const [errorMessage, setErrorMessage] = React.useState("");
     let handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage("")
         
         if(carName && description && year && image){
             
@@ -28,15 +33,21 @@ function CreateCar(){
                 
 
                 setProcessing(true);
-                let path = "api/app/createCar";
+                let path = "api/app/createCars";
                 await Helper.Request(path,"post",formData)
                 .then((result) =>{ 
                   let { message, error, response } = result;
                   setProcessing(false);
-                  
+                  console.log(response)
                   if (!error) {
-                    console.log("loaded");
+                      
                     setProcessing(false);
+                    if(response?.status == 200){
+                        setErrorMessage(response.message)
+                        
+                    }else{
+                        setErrorMessage(response.message)
+                    }
                     
                   } else {
                     setProcessing(false);
@@ -49,17 +60,14 @@ function CreateCar(){
                 setProcessing(false);
             }
         }else{
-            console.log("falseFalse")
         }
         
         
     };
 
     const onImageChange = event => {
-        console.log("hi")
         if (event.target.files && event.target.files[0]) {
           let img = event.target.files[0];
-          console.log(img)
           setImage(img)
         }
       };
@@ -73,7 +81,8 @@ function CreateCar(){
                         <h5 class="card-header bg-primary mt-5 text-white">Add Car</h5>
                         <div class="card-body shadow p-3 mb-5 bg-white rounded">
                             <div >
-
+                            {errorMessage && <div className="error"> {errorMessage} </div>}
+                            {processing ? <LoadingSpinner />:null}
                                 <InputComponent
                                     type="text"
                                     value={carName}

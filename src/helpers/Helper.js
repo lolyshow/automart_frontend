@@ -4,7 +4,11 @@ import Config from "./Config";
 const Helper = {
     Request: async(linkUrl,method = "post",data=null,content_type='multipart/form-data')=>{
         let urls = Config.base_url+linkUrl;
-        console.log("MyData",data)
+        // console.log(urls)
+        let payload = data;
+        if(content_type == "application/json"){
+             payload = JSON.stringify(data);
+        }
         let result = {};
 
         var config = {
@@ -13,14 +17,12 @@ const Helper = {
             headers: { 
                 'Content-Type': content_type,
             },
-            data : data
+            data : payload
         };
 
         await axios(config)
         .then(function (response) {
-            console.log(response);
             let data = response.data;
-            console.log(data)
             if (!data) {
             result = {
                 message: "There seems to be an Error",
