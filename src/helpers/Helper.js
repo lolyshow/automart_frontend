@@ -2,31 +2,27 @@ import axios from "axios";
 import qs  from 'qs';
 import Config from "./Config";
 const Helper = {
-    Request: async(linkUrl,method = "get",dataPayload={})=>{
-    
-    
-        var data = JSON.stringify(dataPayload);
+    Request: async(linkUrl,method = "post",data=null,content_type='multipart/form-data')=>{
         let urls = Config.base_url+linkUrl;
-        console.log("MyData",data)
+        // console.log(urls)
+        let payload = data;
+        if(content_type == "application/json"){
+             payload = JSON.stringify(data);
+        }
         let result = {};
 
         var config = {
             method: method,
             url: urls,
             headers: { 
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Type': 'application/json',
-                'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjI2YjlmZTA3M2QzNjVhOGM4ODVhZmRjIiwiZW1haWwiOiJvbGFsZXJlcGhpbGxpcHNAZ21haWwuY29tIiwiaWF0IjoxNjUxOTk5NjkxLCJleHAiOjE2NTIwMDY4OTF9.JYOa5pI678LR7sI4DVmry7xn-fOh8XeZGpjwaT_Zf9c',
-                // 'Cookie': 'JSESSIONID=539E0A68F2BC33FC52FF1A9A3DA11657'
+                'Content-Type': content_type,
             },
-            data : data
+            data : payload
         };
 
         await axios(config)
         .then(function (response) {
-            console.log("trydtryu",response);
-        let data = response.data;
-            console.log(data)
+            let data = response.data;
             if (!data) {
             result = {
                 message: "There seems to be an Error",
@@ -34,7 +30,6 @@ const Helper = {
                 response: null,
             };
             } else {
-            
             result = {
                 message: "Success",
                 error: false,
@@ -45,7 +40,6 @@ const Helper = {
             
         })
         .catch(function (error) {
-            console.log(error.response)
         result = {
             message: error.toString(),
             error: true,

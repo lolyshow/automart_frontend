@@ -1,37 +1,53 @@
 import React,{useState} from "react";
+import ButtonComponent from "../components/ButtonComponent";
+import FileUploadComponent from "../components/FileUploadComponent";
+import InputComponent from "../components/InputComponent";
+import LoadingSpinner from "../components/LoadingSpinner";
 import Helper from "../helpers/Helper";
 
-
 function CreateCar(){
+
+    
+
     const [carName, setCarName] = useState("")
     const [description, setDescription] = useState("")
     const [year, setYear] = useState("")
     const [image, setImage] = useState(null)
+    const [amount, setAmount] = useState("")
     const [processing, setProcessing] = useState(false)
+    const [errorMessage, setErrorMessage] = React.useState("");
     let handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("mememem",image.name)
+        setErrorMessage("")
+        
         if(carName && description && year && image){
+            
             try {
 
+                const formData = new FormData()
+                formData.append("name", carName)
+                formData.append("amount", amount)
+                formData.append("description", description)
+                formData.append("year", year)
+                formData.append("image", image)
+                
+
                 setProcessing(true);
-                let payload = {
-                    carName,
-                    description,
-                    year,
-                    // image
-                }
-                console.log("MyPayload",payload)
-                let path = "api/app/createCar";
-                console.log("Mp",path)
-                await Helper.Request(path,"post",payload)
+                let path = "api/app/createCars";
+                await Helper.Request(path,"post",formData)
                 .then((result) =>{ 
                   let { message, error, response } = result;
                   setProcessing(false);
-                  
+                  console.log(response)
                   if (!error) {
-                    console.log("loaded");
+                      
                     setProcessing(false);
+                    if(response?.status == 200){
+                        setErrorMessage(response.message)
+                        
+                    }else{
+                        setErrorMessage(response.message)
+                    }
                     
                   } else {
                     setProcessing(false);
@@ -39,27 +55,19 @@ function CreateCar(){
                   }
           
                 });
-          
                 
-            } catch (error) {
-                this.setState({processing:false});
-                // Alert.alert("Error", error.toString());
-              }
-            
-
-
+            }catch (error) {
+                setProcessing(false);
+            }
         }else{
-            console.log("falseFalse")
         }
         
         
     };
 
     const onImageChange = event => {
-        console.log("hi")
         if (event.target.files && event.target.files[0]) {
           let img = event.target.files[0];
-          console.log(img)
           setImage(img)
         }
       };
@@ -72,28 +80,51 @@ function CreateCar(){
                     <div class="card border-0">
                         <h5 class="card-header bg-primary mt-5 text-white">Add Car</h5>
                         <div class="card-body shadow p-3 mb-5 bg-white rounded">
-                            <form onSubmit={handleSubmit}>
-                                <div class="form-group">
-                                    <label for="formGroupExampleInput">Car Name</label>
-                                    <input type="text" class="form-control" value={carName} onChange={(e)=>setCarName(e.target.value)} id="formGroupExampleInput" placeholder="Honder"/>
-                                </div>
-                                <div class="form-group">
-                                    <label for="formGroupExampleInput2">Car Description</label>
-                                    <input type="text" class="form-control" value={description} onChange={(e)=>setDescription(e.target.value)} name ="file" id="formGroupExampleInput2" placeholder="Honder With Working Ac"/>
-                                </div>
-                                <div class="form-group">
-                                    <label for="formGroupExampleInput2">Car Year</label>
-                                    <input type="text" class="form-control" value={year} onChange={(e)=>setYear(e.target.value)} name ="file" id="formGroupExampleInput2" placeholder="2015"/>
-                                </div>
+                            <div >
+                            {errorMessage && <div className="error"> {errorMessage} </div>}
+                            {processing ? <LoadingSpinner />:null}
+                                <InputComponent
+                                    type="text"
+                                    value={carName}
+                                    placeholder="Honder"
+                                    label="Car Name"
+                                    name="name"
+                                    onChangeCarName={(e)=>setCarName(e.target.value)}
+                                />
 
-                                <div class="in">
-                                    
-                                    <input type="file" class="mt-2" onChange={onImageChange} name ="file" id="formGroupExampleInput2"/>
-                                </div>
-                                <div class="form-group ">
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block mt-2">Save</button>
-                                </div>
-                            </form>
+
+                                <InputComponent
+                                    type="text"
+                                    value={description}
+                                    placeholder={"Honder With Working Ac"}
+                                    label={"Car Description"}
+                                    name={"description"}
+                                    onChangeCarName={(e)=>setDescription(e.target.value)}
+                                />
+                                
+
+                                <InputComponent
+                                    type="number"
+                                    value={year}
+                                    placeholder={"2015"}
+                                    label={"Car Year"}
+                                    name={"year"}
+                                    onChangeCarName={(e)=>setYear(e.target.value)}
+                                />
+
+                                <InputComponent
+                                    type="number"
+                                    value={amount}
+                                    placeholder={"1000"}
+                                    label={"amount"}
+                                    name={"amount"}
+                                    onChangeCarName={(e)=>setAmount(e.target.value)}
+                                />
+                        
+                                <FileUploadComponent onImageChange = {onImageChange} />
+
+                                <ButtonComponent handleClick={handleSubmit}/>
+                            </div>
                             {/* <a href="#" class="btn btn-primary mt-2">Add Car</a> */}
                         </div>
                     </div>

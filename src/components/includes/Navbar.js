@@ -10,14 +10,14 @@ function Navbar(){
           <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
             <a className="navbar-brand" href="/">Home</a>
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link className="nav-link active" to="/">View Cars</Link>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <Link className="nav-link active" to="/createCar">Create Car</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/manageCars">Manage Car</Link>
+                <Link className="nav-link active" to="/manageCars">Manage Car</Link>
               </li>
             </ul>
             
